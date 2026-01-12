@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -45,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -203,37 +205,54 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun KeepNotesApp(innerPadding: PaddingValues) {
-    val comments = remember {
+    val notes = remember {
         mutableStateListOf(
-            "Excelente café y ambiente.",
-            "El capuchino estaba delicioso.",
-            "Muy buena atención del personal.",
-            "Espacio tranquilo para estudiar.",
-            "Un poco caro, pero vale la pena.",
-            "Excelente café y ambiente.",
-            "El capuchino estaba delicioso.",
-            "Muy buena atención del personal.",
-            "Espacio tranquilo para estudiar.",
-            "Un poco caro, pero vale la pena.",
-            "Excelente café y ambiente.",
-            "El capuchino estaba delicioso.",
-            "Muy buena atención del personal.",
-            "Espacio tranquilo para estudiar.",
-            "Un poco caro, pero vale la pena.",
-            "Excelente café y ambiente.",
-            "El capuchino estaba delicioso.",
-            "Muy buena atención del personal.",
-            "Espacio tranquilo para estudiar.",
-            "Un poco caro, pero vale la pena.",
-            "Excelente café y ambiente.",
-            "El capuchino estaba delicioso.",
-            "Muy buena atención del personal.",
-            "Espacio tranquilo para estudiar.",
-            "Un poco caro, pero vale la pena."
+            "Lorem ipsum dolor sit amet. Est corporis nobis aut dolore sunt et galisum beatae.",
+            "Quo atque galisum 33 laborum doloremque qui velit consequatur.",
+            "Non nesciunt fugit sit corrupti error ut quam magnam qui praesentium sint non maxime blanditiis.",
+            "Non facere officia qui dolor cupiditate sed quas molestias id quisquam facilis non velit officiis qui aliquid esse in internos recusandae.",
+            "Ea amet quibusdam sit cumque sint aut quia illo est aliquam tempora.",
+            "Et sapiente totam id consequatur quasi aut necessitatibus numquam et corporis suscipit.",
+            "Est labore ipsum vel laborum corrupti in enim ipsam ut tenetur voluptas!",
+            "Est voluptatem atque est totam dolor ut quis repellendus et tenetur neque cum beatae doloremque sit quam quod rem quia commodi.",
+            "Qui omnis dolor in perferendis repudiandae in ipsa earum ea optio repellat id libero quia non quia dolore.",
+            "Lorem ipsum dolor sit amet. Est corporis nobis aut dolore sunt et galisum beatae.",
+            "Quo atque galisum 33 laborum doloremque qui velit consequatur.",
+            "Non nesciunt fugit sit corrupti error ut quam magnam qui praesentium sint non maxime blanditiis.",
+            "Non facere officia qui dolor cupiditate sed quas molestias id quisquam facilis non velit officiis qui aliquid esse in internos recusandae.",
+            "Ea amet quibusdam sit cumque sint aut quia illo est aliquam tempora.",
+            "Et sapiente totam id consequatur quasi aut necessitatibus numquam et corporis suscipit.",
+            "Est labore ipsum vel laborum corrupti in enim ipsam ut tenetur voluptas!",
+            "Est voluptatem atque est totam dolor ut quis repellendus et tenetur neque cum beatae doloremque sit quam quod rem quia commodi.",
+            "Qui omnis dolor in perferendis repudiandae in ipsa earum ea optio repellat id libero quia non quia dolore.",
+            "Lorem ipsum dolor sit amet. Est corporis nobis aut dolore sunt et galisum beatae.",
+            "Quo atque galisum 33 laborum doloremque qui velit consequatur.",
+            "Non nesciunt fugit sit corrupti error ut quam magnam qui praesentium sint non maxime blanditiis.",
+            "Non facere officia qui dolor cupiditate sed quas molestias id quisquam facilis non velit officiis qui aliquid esse in internos recusandae.",
+            "Ea amet quibusdam sit cumque sint aut quia illo est aliquam tempora.",
+            "Et sapiente totam id consequatur quasi aut necessitatibus numquam et corporis suscipit.",
+            "Est labore ipsum vel laborum corrupti in enim ipsam ut tenetur voluptas!",
+            "Est voluptatem atque est totam dolor ut quis repellendus et tenetur neque cum beatae doloremque sit quam quod rem quia commodi.",
+            "Qui omnis dolor in perferendis repudiandae in ipsa earum ea optio repellat id libero quia non quia dolore."
         )
     }
 
     val gridState = rememberLazyStaggeredGridState()
+
+    var colorCard by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var colorPer by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var realColor = if (colorPer) Color.Red else Color.Blue
+    var colorPer2 by rememberSaveable {
+        mutableStateOf(false)
+    }
+    val realColor2 by animateColorAsState(
+        targetValue = if (colorPer2) Color.Red else Color.Blue
+    )
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(1),
@@ -245,17 +264,18 @@ fun KeepNotesApp(innerPadding: PaddingValues) {
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(comments) { comment ->
+        items(notes) { note ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(4.dp)
+                elevation = CardDefaults.cardElevation(6.dp),
+                onClick = { colorPer2 = !colorPer2 }
             ) {
                 Box(
                     modifier = Modifier
                         .padding(12.dp)
                 ) {
                     Text(
-                        text = comment,
+                        text = note,
                         style = MaterialTheme.typography.bodyMedium)
                 }
             }
