@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -61,6 +63,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.keepnotes.ui.theme.DarkOrange
 import com.example.keepnotes.ui.theme.KeepNotesTheme
 import com.example.keepnotes.ui.theme.LightOrange
 import com.example.keepnotes.ui.theme.Violet
@@ -89,7 +92,8 @@ class MainActivity : ComponentActivity() {
                             },
                             colors = TopAppBarDefaults.largeTopAppBarColors(
                                 containerColor = LightOrange,
-                                titleContentColor = Color.White
+                                titleContentColor = Color.White,
+                                scrolledContainerColor = DarkOrange
                             ),
                             title = {
                                 Text(
@@ -239,21 +243,6 @@ fun KeepNotesApp(innerPadding: PaddingValues) {
 
     val gridState = rememberLazyStaggeredGridState()
 
-    var colorCard by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    var colorPer by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var realColor = if (colorPer) Color.Red else Color.Blue
-    var colorPer2 by rememberSaveable {
-        mutableStateOf(false)
-    }
-    val realColor2 by animateColorAsState(
-        targetValue = if (colorPer2) Color.Red else Color.Blue
-    )
-
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(1),
         modifier = Modifier
@@ -265,18 +254,47 @@ fun KeepNotesApp(innerPadding: PaddingValues) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(notes) { note ->
+            var selectedNote by rememberSaveable {
+                mutableStateOf(false)
+            }
+
+            val scale by animateFloatAsState(
+                targetValue = if (selectedNote) 1.05f else 1f,
+                label = "scale"
+            )
+
+            val elevation by animateDpAsState(
+                targetValue = if (selectedNote) 12.dp else 6.dp,
+                label = "elevation"
+            )
+
+            val backgroundColor by animateColorAsState(
+                targetValue = if (selectedNote) Color(0xFFE6D9FF) else MaterialTheme.colorScheme.surface,
+                label = "color"
+            )
+
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(6.dp),
-                onClick = { colorPer2 = !colorPer2 }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
+                elevation = CardDefaults.cardElevation(elevation),
+                colors = CardDefaults.cardColors(
+                    containerColor = backgroundColor
+                ),
+                onClick = {
+                    selectedNote = !selectedNote
+                }
             ) {
                 Box(
-                    modifier = Modifier
-                        .padding(12.dp)
+                    modifier = Modifier.padding(12.dp)
                 ) {
                     Text(
                         text = note,
-                        style = MaterialTheme.typography.bodyMedium)
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
         }
