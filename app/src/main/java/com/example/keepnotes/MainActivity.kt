@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -30,7 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -64,8 +65,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.keepnotes.ui.theme.DarkOrange
+import com.example.keepnotes.ui.theme.FadedYellow
 import com.example.keepnotes.ui.theme.KeepNotesTheme
 import com.example.keepnotes.ui.theme.LightOrange
+import com.example.keepnotes.ui.theme.Purple
 import com.example.keepnotes.ui.theme.Violet
 
 class MainActivity : ComponentActivity() {
@@ -93,7 +96,9 @@ class MainActivity : ComponentActivity() {
                             colors = TopAppBarDefaults.largeTopAppBarColors(
                                 containerColor = LightOrange,
                                 titleContentColor = Color.White,
-                                scrolledContainerColor = DarkOrange
+                                scrolledContainerColor = DarkOrange,
+                                actionIconContentColor = Color.White,
+                                navigationIconContentColor = Color.White
                             ),
                             title = {
                                 Text(
@@ -116,10 +121,25 @@ class MainActivity : ComponentActivity() {
                                         )
                                     )
 
+                                    val color by rememberInfiniteTransition().animateColor(
+                                        initialValue = Violet, // violeta
+                                        targetValue = Purple,  // rosa
+                                        animationSpec = infiniteRepeatable(
+                                            animation = tween(
+                                                durationMillis = 600,
+                                                easing = LinearEasing
+                                            ),
+                                            repeatMode = RepeatMode.Reverse
+                                        ),
+                                        label = "color"
+                                    )
+
+
                                     IconButton(onClick = { /* Implement later */ }) {
                                         Icon(
-                                            imageVector = Icons.Outlined.Notifications,
+                                            imageVector = Icons.Filled.Notifications,
                                             contentDescription = "stuff",
+                                            tint = color,
                                         modifier = Modifier
                                             .graphicsLayer(
                                                 transformOrigin = TransformOrigin(
@@ -194,7 +214,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 modifier = Modifier
-                                    .size(65.dp)
+                                    .size(60.dp)
                                     .fillMaxSize()
                             )
                         }
@@ -248,7 +268,7 @@ fun KeepNotesApp(innerPadding: PaddingValues) {
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(8.dp),
+            .padding(10.dp),
         state = gridState,
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -269,7 +289,7 @@ fun KeepNotesApp(innerPadding: PaddingValues) {
             )
 
             val backgroundColor by animateColorAsState(
-                targetValue = if (selectedNote) Color(0xFFE6D9FF) else MaterialTheme.colorScheme.surface,
+                targetValue = if (selectedNote) Purple else FadedYellow,
                 label = "color"
             )
 
